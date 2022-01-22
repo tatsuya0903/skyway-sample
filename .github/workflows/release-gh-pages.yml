@@ -20,6 +20,8 @@ jobs:
       - run: npm ci
       - run: npm run lint
       - run: npm run build-docs
+        env:
+          VUE_APP_COMMIT_HASH: '${{ github.sha }}'
       - name: gh-pagesブランチを更新
         run: |
           git --version
