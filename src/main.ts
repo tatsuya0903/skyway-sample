@@ -3,8 +3,10 @@ import App from './App.vue'
 import './registerServiceWorker'
 import router from './router'
 import store from './store'
+import VueCompositionAPI from '@vue/composition-api'
 
 Vue.config.productionTip = false
+Vue.use(VueCompositionAPI)
 
 new Vue({
   router,
