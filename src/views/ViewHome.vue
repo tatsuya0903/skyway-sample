@@ -16,7 +16,7 @@
 <script lang="ts">
 import { defineComponent, reactive, toRefs } from '@vue/composition-api'
 import { Location } from 'vue-router'
-import { RouteLocations } from '@/router/models'
+import { Sample } from '@/models/sample'
 
 type Item = {
   title: string
@@ -35,28 +35,14 @@ export default defineComponent({
   },
   setup(props: Props) {
     const state = reactive<State>({})
-    const items: Item[] = [
-      {
-        title: 'サンプル1',
-        subTitle: 'テキスト送受信(P2P)',
-        to: RouteLocations.toSample1(props.apiKey),
-      },
-      {
-        title: 'サンプル2',
-        subTitle: 'テキスト送受信(ルーム)',
-        to: RouteLocations.toSample2(props.apiKey),
-      },
-      {
-        title: 'サンプル3',
-        subTitle: 'ファイル共有',
-        to: RouteLocations.toSample3(props.apiKey),
-      },
-      {
-        title: 'サンプル4',
-        subTitle: '映像・音声通話(ルーム)',
-        to: RouteLocations.toSample4(props.apiKey),
-      },
-    ]
+    const items: Item[] = Sample.all.map((v) => {
+      return {
+        title: v.title,
+        subTitle: v.subTitle,
+        to: v.calcLocation(props.apiKey),
+      }
+    })
+
     return {
       ...toRefs(state),
       items,
