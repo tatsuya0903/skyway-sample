@@ -6,7 +6,7 @@
       </v-card-text>
       <v-card-actions>
         <v-spacer />
-        <v-btn text color="primary" :to="toHome" :disabled="toHome === null">
+        <v-btn text color="primary" :disabled="disabled" v-on:click="clickDone">
           <v-icon left>mdi-check</v-icon>
           決定
         </v-btn>
@@ -16,10 +16,12 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, reactive, toRefs } from '@vue/composition-api'
+import { computed, defineComponent, reactive, toRefs, watch } from '@vue/composition-api'
 import InputText from '@/components/InputText.vue'
 import { RouteLocations } from '@/router/models'
 import { Location } from 'vue-router'
+import { LocalStorage } from '@/localStorage'
+import { RouterHelper } from '@/router/helper'
 
 type State = {
   apiKey: string
@@ -28,18 +30,23 @@ export default defineComponent({
   components: { InputText },
   setup() {
     const state = reactive<State>({
-      apiKey: '',
+      apiKey: LocalStorage.apiKey ?? '',
     })
 
-    const toHome = computed<Location | null>(() => {
-      if (state.apiKey.length === 0) {
+    const disabled = computed<boolean>(() => state.apiKey.length === 0)
+
+    const clickDone = async () => {
+      const apiKey = state.apiKey
+      if (apiKey.length === 0) {
         return null
       }
-      return RouteLocations.toHome(state.apiKey)
-    })
+      LocalStorage.apiKey = apiKey
+      await RouterHelper.moveHome(apiKey)
+    }
     return {
       ...toRefs(state),
-      toHome,
+      disabled,
+      clickDone,
     }
   },
 })
