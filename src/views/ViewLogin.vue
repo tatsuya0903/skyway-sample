@@ -6,7 +6,7 @@
       </v-card-text>
       <v-card-actions>
         <v-spacer />
-        <v-btn text color="primary" :disabled="disabled" v-on:click="clickDone">
+        <v-btn text color="primary" :disabled="disabled" @click="clickDone">
           <v-icon left>mdi-check</v-icon>
           決定
         </v-btn>
@@ -16,10 +16,8 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, reactive, toRefs, watch } from '@vue/composition-api'
+import { computed, defineComponent, reactive, toRefs } from '@vue/composition-api'
 import InputText from '@/components/InputText.vue'
-import { RouteLocations } from '@/router/models'
-import { Location } from 'vue-router'
 import { LocalStorage } from '@/localStorage'
 import { RouterHelper } from '@/router/helper'
 

@@ -3,6 +3,7 @@
     <v-text-field
       v-model="localValue"
       :readonly="readonly"
+      :disabled="disabled"
       outlined
       dense
       :label="label"
@@ -19,6 +20,7 @@ type Props = {
   value: string
   label: string | null
   readonly: boolean
+  disabled: boolean
 }
 export default defineComponent({
   components: {},
@@ -26,6 +28,7 @@ export default defineComponent({
     value: { type: String, default: null },
     label: { type: String, default: null },
     readonly: { type: Boolean, default: false },
+    disabled: { type: Boolean, default: false },
   },
   emits: ['input'],
   setup(props: Props, context: SetupContext) {
