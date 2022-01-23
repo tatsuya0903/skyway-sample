@@ -3,15 +3,21 @@
     <v-col cols="12">
       <input ref="input" type="file" @change="changeFile" />
     </v-col>
-    <v-col>
-      <v-btn @click="clickShare">共有開始</v-btn>
+    <v-col cols="12">
+      <v-btn color="primary" @click="clickShare">
+        <v-icon left>mdi-share</v-icon>
+        共有開始
+      </v-btn>
     </v-col>
-    <v-col>
-      <div v-if="shareUrl">
+    <template v-if="shareUrl">
+      <v-col cols="12">
         ダウンロードURL：
         <a :href="shareUrl" target="_blank">{{ shareUrl }}</a>
-      </div>
-    </v-col>
+      </v-col>
+      <v-col cols="12">
+        <QrCode :data="shareUrl" size="400" />
+      </v-col>
+    </template>
   </v-row>
 </template>
 
@@ -19,6 +25,7 @@
 import { computed, defineComponent, reactive, ref, toRefs } from '@vue/composition-api'
 import Peer, { DataConnection, PeerConstructorOption, PeerError } from 'skyway-js'
 import { Env } from '@/env'
+import QrCode from '@/components/QrCode.vue'
 
 // eslint-disable-next-line @typescript-eslint/ban-types
 type State = {
@@ -30,7 +37,7 @@ type Props = {
   apiKey: string
 }
 export default defineComponent({
-  components: {},
+  components: { QrCode },
   props: {
     apiKey: { type: String, required: true },
   },
