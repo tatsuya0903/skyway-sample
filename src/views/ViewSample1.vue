@@ -1,37 +1,58 @@
 <template>
-  <div>
-    <div>
-      <InputText v-model="peerId" label="自分のPeerId" :disabled="peer !== null" />
-      <v-btn color="primary" text :disabled="peer !== null" @click="clickDone1">
-        <v-icon left>mdi-check</v-icon>
-        決定
-      </v-btn>
+  <div class="view-sample1">
+    <v-dialog v-model="displayDialog" width="100%" max-width="480px" persistent>
+      <v-card outlined>
+        <v-card-title>設定</v-card-title>
+        <v-list dense>
+          <v-list-item>
+            <InputText v-model="apiKey" label="APIキー" disabled />
+            <v-list-item-action>
+              <div style="width: 64px" />
+            </v-list-item-action>
+          </v-list-item>
+          <v-list-item>
+            <InputText v-model="peerId" label="自分のPeerId" :disabled="peer !== null" />
+            <v-list-item-action>
+              <v-btn color="primary" :disabled="peer !== null" @click="clickDone1">決定</v-btn>
+            </v-list-item-action>
+          </v-list-item>
+          <v-list-item>
+            <InputText
+              v-model="toPeerId"
+              label="相手のPeerId"
+              :disabled="dataConnection !== null"
+            />
+            <v-list-item-action>
+              <v-btn color="primary" :disabled="dataConnection !== null" @click="clickConnect">
+                接続
+              </v-btn>
+            </v-list-item-action>
+          </v-list-item>
+        </v-list>
+      </v-card>
+    </v-dialog>
+
+    <div class="view-sample1__row view-sample1__row--content">
+      <v-list two-line width="100%">
+        <template v-for="(message, index) in messages">
+          <v-list-item :key="index">
+            <v-list-item-content>
+              <v-list-item-subtitle>{{ message.peerId }}</v-list-item-subtitle>
+              <v-list-item-title>{{ message.text }}</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+          <v-divider :key="`${index}-divider`" />
+        </template>
+      </v-list>
     </div>
-    <div>
-      <InputText v-model="toPeerId" label="相手のPeerId" :disabled="dataConnection !== null" />
-      <v-btn color="primary" text :disabled="dataConnection !== null" @click="clickConnect">
-        <v-icon left>mdi-check</v-icon>
-        決定
-      </v-btn>
-    </div>
-    <div>
+    <div class="view-sample1__row view-sample1__row--footer">
+      <v-divider />
       <InputText v-model="text" />
       <v-btn color="primary" text :disabled="text.length === 0" @click="clickSend">
         <v-icon left>mdi-send</v-icon>
         送信
       </v-btn>
     </div>
-    <v-divider />
-    <v-list two-line>
-      <template v-for="(message, index) in messages">
-        <v-list-item :key="index">
-          <v-list-item-content>
-            <v-list-item-subtitle>{{ message.peerId }}</v-list-item-subtitle>
-            <v-list-item-title>{{ message.text }}</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-      </template>
-    </v-list>
   </div>
 </template>
 
@@ -46,6 +67,7 @@ type Message = {
 }
 // eslint-disable-next-line @typescript-eslint/ban-types
 type State = {
+  displayDialog: boolean
   peerId: string
   peer: Peer | null
   toPeerId: string
@@ -63,6 +85,7 @@ export default defineComponent({
   },
   setup(props: Props) {
     const state = reactive<State>({
+      displayDialog: true,
       peerId: '',
       peer: null,
       toPeerId: '',
@@ -136,7 +159,11 @@ export default defineComponent({
       dataConnection.on('error', (err: PeerError) => {
         console.info(`dataConnection: error > ${JSON.stringify(err)}`)
       })
+      state.toPeerId = dataConnection.remoteId
       state.dataConnection = dataConnection
+
+      // ダイアログを閉じる
+      state.displayDialog = false
     }
 
     return {
@@ -149,4 +176,34 @@ export default defineComponent({
 })
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.view-sample1 {
+  display: flex;
+  flex-direction: column;
+  .view-sample1__row {
+    display: flex;
+    &.view-sample1__row--header {
+      justify-content: center;
+      align-items: center;
+    }
+    &.view-sample1__row--content {
+      flex: 1;
+      padding-bottom: 50px;
+    }
+    &.view-sample1__row--footer {
+      position: fixed;
+      left: 0px;
+      right: 0px;
+      bottom: 0px;
+      width: 100%;
+      padding: 2px 8px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-radius: 4px;
+      border-top: 1px lightgray solid;
+      background: white;
+    }
+  }
+}
+</style>
