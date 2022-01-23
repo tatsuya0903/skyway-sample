@@ -11,4 +11,12 @@ export class Env {
     }
     return `https://github.com/tatsuya0903/skyway-sample/commit/${this.commitHash}`
   }
+
+  static get gitHubPagesUrl(): string {
+    return 'https://tatsuya0903.github.io/skyway-sample'
+  }
+
+  static calcSample3ShareUrl(apiKey: string, peerId: string): string {
+    return `${this.gitHubPagesUrl}/${apiKey}/sample3/${peerId}`
+  }
 }
