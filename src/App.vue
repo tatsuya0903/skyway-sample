@@ -45,7 +45,7 @@ export default defineComponent({
         case RouteNames.Sample4:
           return Sample.find(SampleIds.Four).title
         default:
-          return process.env.VUE_APP_TITLE
+          return Env.title
       }
     })
 
