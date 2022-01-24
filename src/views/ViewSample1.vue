@@ -1,5 +1,40 @@
 <template>
-  <div class="view-sample1">
+  <LayoutView>
+    <template v-slot:main>
+      <v-container>
+        <div class="view-sample1">
+          <div class="view-sample1__row view-sample1__row--content">
+            <v-list two-line width="100%">
+              <template v-for="(message, index) in messages">
+                <v-list-item :key="index">
+                  <v-list-item-content>
+                    <v-list-item-subtitle>{{ message.peerId }}</v-list-item-subtitle>
+                    <v-list-item-title>{{ message.text }}</v-list-item-title>
+                  </v-list-item-content>
+                </v-list-item>
+                <v-divider :key="`${index}-divider`" />
+              </template>
+            </v-list>
+          </div>
+        </div>
+      </v-container>
+    </template>
+    <template v-slot:footer>
+      <v-divider />
+      <div style="padding: 8px">
+        <v-text-field
+          v-model="text"
+          hide-details
+          dense
+          placeholder="メッセージを送信"
+          filled
+          rounded
+          append-icon="mdi-send"
+          @click:append="clickSend"
+        />
+      </div>
+    </template>
+
     <v-dialog v-model="displayDialog" width="100%" max-width="480px" persistent>
       <v-card outlined>
         <v-card-title>設定</v-card-title>
@@ -31,35 +66,14 @@
         </v-list>
       </v-card>
     </v-dialog>
-
-    <div class="view-sample1__row view-sample1__row--content">
-      <v-list two-line width="100%">
-        <template v-for="(message, index) in messages">
-          <v-list-item :key="index">
-            <v-list-item-content>
-              <v-list-item-subtitle>{{ message.peerId }}</v-list-item-subtitle>
-              <v-list-item-title>{{ message.text }}</v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
-          <v-divider :key="`${index}-divider`" />
-        </template>
-      </v-list>
-    </div>
-    <div class="view-sample1__row view-sample1__row--footer">
-      <v-divider />
-      <InputText v-model="text" />
-      <v-btn color="primary" text :disabled="text.length === 0" @click="clickSend">
-        <v-icon left>mdi-send</v-icon>
-        送信
-      </v-btn>
-    </div>
-  </div>
+  </LayoutView>
 </template>
 
 <script lang="ts">
 import { defineComponent, reactive, toRefs } from '@vue/composition-api'
 import Peer, { DataConnection, PeerConstructorOption, PeerError } from 'skyway-js'
 import InputText from '@/components/InputText.vue'
+import LayoutView from '@/components/LayoutView.vue'
 
 type Message = {
   peerId: string
@@ -79,7 +93,7 @@ type Props = {
   apiKey: string
 }
 export default defineComponent({
-  components: { InputText },
+  components: { LayoutView, InputText },
   props: {
     apiKey: { type: String, required: true },
   },

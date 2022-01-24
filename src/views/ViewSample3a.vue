@@ -1,32 +1,38 @@
 <template>
-  <v-row style="max-width: 800px; margin: auto">
-    <v-col cols="12" md="6">
-      <v-card outlined>
-        <v-card-title>ファイル共有</v-card-title>
-        <ImagePreview v-if="file !== null" :file="file" />
-        <v-card-text>
-          <InputFile v-model="file" label="ファイル" accept="image/*" />
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer />
-          <v-btn text color="primary" @click="clickShare">
-            <v-icon left>mdi-share</v-icon>
-            共有開始
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-col>
-    <v-col cols="12" md="6">
-      <template v-if="shareUrl">
-        <v-card outlined>
-          <QrCode :data="shareUrl" size="400" />
-          <v-card-text class="text--primary" style="padding-top: 0px; word-break: break-all">
-            <a :href="shareUrl" target="_blank">{{ shareUrl }}</a>
-          </v-card-text>
-        </v-card>
-      </template>
-    </v-col>
-  </v-row>
+  <LayoutView>
+    <template v-slot:main>
+      <v-container>
+        <v-row style="max-width: 800px; margin: auto">
+          <v-col cols="12" md="6">
+            <v-card outlined>
+              <v-card-title>ファイル共有</v-card-title>
+              <ImagePreview v-if="file !== null" :file="file" />
+              <v-card-text>
+                <InputFile v-model="file" label="ファイル" accept="image/*" />
+              </v-card-text>
+              <v-card-actions>
+                <v-spacer />
+                <v-btn text color="primary" @click="clickShare">
+                  <v-icon left>mdi-share</v-icon>
+                  共有開始
+                </v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-col>
+          <v-col cols="12" md="6">
+            <template v-if="shareUrl">
+              <v-card outlined>
+                <QrCode :data="shareUrl" size="400" />
+                <v-card-text class="text--primary" style="padding-top: 0px; word-break: break-all">
+                  <a :href="shareUrl" target="_blank">{{ shareUrl }}</a>
+                </v-card-text>
+              </v-card>
+            </template>
+          </v-col>
+        </v-row>
+      </v-container>
+    </template>
+  </LayoutView>
 </template>
 
 <script lang="ts">
@@ -36,6 +42,7 @@ import { Env } from '@/env'
 import QrCode from '@/components/QrCode.vue'
 import InputFile from '@/components/InputFile.vue'
 import ImagePreview from '@/components/ImagePreview.vue'
+import LayoutView from '@/components/LayoutView.vue'
 
 // eslint-disable-next-line @typescript-eslint/ban-types
 type State = {
@@ -47,7 +54,7 @@ type Props = {
   apiKey: string
 }
 export default defineComponent({
-  components: { ImagePreview, InputFile, QrCode },
+  components: { LayoutView, ImagePreview, InputFile, QrCode },
   props: {
     apiKey: { type: String, required: true },
   },

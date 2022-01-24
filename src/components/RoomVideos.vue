@@ -5,6 +5,10 @@
         <RoomVideo :media-stream="mediaStream" :label="mediaStream.peerId" />
       </div>
     </template>
+
+    <div class="video-previews__mini">
+      <RoomVideo :media-stream="mediaStream" />
+    </div>
   </div>
 </template>
 
@@ -13,11 +17,13 @@ import { computed, defineComponent } from '@vue/composition-api'
 import RoomVideo from '@/components/RoomVideo.vue'
 
 type Props = {
+  mediaStream: MediaStream | null
   mediaStreams: MediaStream[]
 }
 export default defineComponent({
   components: { RoomVideo },
   props: {
+    mediaStream: { type: MediaStream, default: null },
     mediaStreams: { type: Array, required: true },
   },
   setup(props: Props) {
@@ -89,6 +95,17 @@ export default defineComponent({
     width: 33%;
     height: 33%;
     box-sizing: border-box;
+  }
+
+  .video-previews__mini {
+    position: absolute;
+    right: 16px;
+    bottom: 16px;
+    max-width: 200px;
+    width: 50vw;
+    border: 1px solid white;
+    border-radius: 16px;
+    overflow: hidden;
   }
 }
 </style>

@@ -1,38 +1,39 @@
 <template>
-  <div>
+  <LayoutView :scroll="false">
+    <template v-slot:header></template>
+    <template v-slot:main>
+      <div class="room">
+        <div class="room__item room__item--video">
+          <RoomVideos :media-streams="mediaStreams" :media-stream="mediaStream" />
+        </div>
+        <div v-show="displayDrawer" class="room__item room__item--chat">
+          <RoomChat :messages="messages" @send="clickSend" />
+        </div>
+      </div>
+    </template>
+    <template v-slot:footer>
+      <v-toolbar dark>
+        <v-spacer />
+        <v-btn icon @click="clickQr">
+          <v-icon>mdi-qrcode</v-icon>
+        </v-btn>
+        <v-btn icon :color="displayDrawer ? 'primary' : null" @click="clickChat">
+          <v-icon>{{ displayDrawer ? 'mdi-message' : 'mdi-message-text' }}</v-icon>
+        </v-btn>
+        <v-spacer />
+      </v-toolbar>
+    </template>
     <v-dialog v-model="displayDialog" width="100%" max-width="480px" persistent>
       <v-card outlined>
         <v-card-title>設定</v-card-title>
         <v-card-text>
           <CameraForm @click-done="clickCamera" />
           <PeerForm @click-done="clickPeer" />
-          <RoomForm @click-join="clickJoin" />
+          <RoomForm :room-name="roomName" @click-join="clickJoin" />
         </v-card-text>
       </v-card>
     </v-dialog>
-    <div style="display: flex; flex-direction: row">
-      <div style="display: flex; flex: 1">
-        <RoomVideos :media-streams="mediaStreams" />
-        <div
-          style="
-            position: absolute;
-            right: 16px;
-            bottom: 16px;
-            max-width: 200px;
-            width: 50vw;
-            border: 1px solid white;
-            border-radius: 16px;
-            overflow: hidden;
-          "
-        >
-          <RoomVideo :media-stream="mediaStream" />
-        </div>
-      </div>
-      <div style="width: 300px">
-        <RoomChat :messages="messages" @send="clickSend" />
-      </div>
-    </div>
-  </div>
+  </LayoutView>
 </template>
 
 <script lang="ts">
@@ -48,12 +49,16 @@ import RoomVideos from '@/components/RoomVideos.vue'
 import RoomVideo from '@/components/RoomVideo.vue'
 import CameraSelect from '@/components/CameraSelect.vue'
 import CameraForm from '@/components/CameraForm.vue'
+import LayoutView from '@/components/LayoutView.vue'
+import { Dialogs } from '@/dialogs'
+import { Env } from '@/env'
 
 // eslint-disable-next-line @typescript-eslint/ban-types
 type State = {
+  displayDrawer: boolean
   displayDialog: boolean
   peerId: string | null
-  roomName: string | null
+  localRoomName: string | null
   peer: Peer | null
   room: MeshRoom | null
   mediaStream: MediaStream | null
@@ -62,9 +67,11 @@ type State = {
 }
 type Props = {
   apiKey: string
+  roomName: string | null
 }
 export default defineComponent({
   components: {
+    LayoutView,
     CameraForm,
     CameraSelect,
     RoomVideo,
@@ -76,12 +83,14 @@ export default defineComponent({
   },
   props: {
     apiKey: { type: String, required: true },
+    roomName: { type: String, default: null },
   },
   setup(props: Props) {
     const state = reactive<State>({
+      displayDrawer: true,
       displayDialog: true,
       peerId: null,
-      roomName: null,
+      localRoomName: props.roomName,
       peer: null,
       room: null,
       mediaStream: null,
@@ -114,6 +123,7 @@ export default defineComponent({
       }
 
       await joinRoom(peer, roomName, mediaStream)
+      state.localRoomName = roomName
     }
 
     const clickSend = async (text: string) => {
@@ -130,6 +140,19 @@ export default defineComponent({
       }
       room.send(message)
       state.messages.push(message)
+    }
+
+    const clickChat = async () => {
+      state.displayDrawer = !state.displayDrawer
+    }
+    const clickQr = async () => {
+      const roomName = state.localRoomName
+      if (roomName === null) {
+        await Dialogs.showError('')
+        return
+      }
+      const shareUrl = Env.calcSample4ShareUrl(props.apiKey, roomName)
+      await Dialogs.showShareUrl(shareUrl)
     }
 
     /**
@@ -159,11 +182,11 @@ export default defineComponent({
     /**
      * ルームに参加する
      * @param peer
-     * @param roomName
+     * @param localRoomName
      * @param stream
      */
-    const joinRoom = async (peer: Peer, roomName: string, stream: MediaStream | null) => {
-      const room = peer.joinRoom(roomName, {
+    const joinRoom = async (peer: Peer, localRoomName: string, stream: MediaStream | null) => {
+      const room = peer.joinRoom(localRoomName, {
         mode: 'mesh',
         stream: stream ?? undefined,
       })
@@ -211,9 +234,37 @@ export default defineComponent({
       clickPeer,
       clickJoin,
       clickSend,
+      clickChat,
+      clickQr,
     }
   },
 })
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.room {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: row;
+  .room__item {
+    position: relative;
+    display: flex;
+    &.room__item--video {
+      background: orange;
+      flex: 1;
+    }
+    &.room__item--chat {
+      background: black;
+      width: 380px;
+      padding: 8px;
+    }
+    &.room__item--actions {
+      position: absolute;
+      right: 8px;
+      top: 8px;
+    }
+  }
+}
+</style>

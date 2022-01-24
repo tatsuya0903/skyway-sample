@@ -19,4 +19,7 @@ export class Env {
   static calcSample3ShareUrl(apiKey: string, peerId: string): string {
     return `${this.gitHubPagesUrl}/${apiKey}/sample3/${peerId}`
   }
+  static calcSample4ShareUrl(apiKey: string, roomName: string): string {
+    return `${this.gitHubPagesUrl}/${apiKey}/sample4/${roomName}`
+  }
 }

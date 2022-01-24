@@ -8,12 +8,12 @@
     </div>
     <div class="room-form__row">
       <InputText
-        v-model="roomName"
+        v-model="localRoomName"
         label="会議コード"
         icon="mdi-keyboard-outline"
         placeholder="会議コードを入力"
       />
-      <v-btn text color="primary" :disabled="roomName === null" @click="clickJoin">参加</v-btn>
+      <v-btn text color="primary" :disabled="localRoomName === null" @click="clickJoin">参加</v-btn>
     </div>
   </div>
 </template>
@@ -23,26 +23,32 @@ import { defineComponent, reactive, SetupContext, toRefs } from '@vue/compositio
 import InputText from '@/components/InputText.vue'
 
 type State = {
+  localRoomName: string | null
+}
+type Props = {
   roomName: string | null
 }
 export default defineComponent({
   components: { InputText },
+  props: {
+    roomName: { type: String, default: null },
+  },
   emits: ['click-join'],
-  setup(_: unknown, context: SetupContext) {
+  setup(props: Props, context: SetupContext) {
     const state = reactive<State>({
-      roomName: null,
+      localRoomName: props.roomName,
     })
 
-    const emitJoin = (roomName: string) => {
-      context.emit('click-join', roomName)
+    const emitJoin = (localRoomName: string) => {
+      context.emit('click-join', localRoomName)
     }
     const clickStart = async () => {
-      const roomName = createRoomName()
-      emitJoin(roomName)
+      const localRoomName = createRoomName()
+      emitJoin(localRoomName)
     }
     const clickJoin = async () => {
-      const roomName = state.roomName ?? createRoomName()
-      emitJoin(roomName)
+      const localRoomName = state.localRoomName ?? createRoomName()
+      emitJoin(localRoomName)
     }
     const createRoomName = (): string => {
       const createCode = (len: number): string => {

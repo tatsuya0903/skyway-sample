@@ -1,24 +1,31 @@
 <template>
-  <v-row style="max-width: 480px; width: 100%; margin: auto">
-    <v-card width="100%" outlined style="margin: auto">
-      <v-card-title>ファイル共有</v-card-title>
-      <ImagePreview :file="file" />
-      <v-card-actions>
-        <v-spacer />
-        <v-btn text color="primary" @click="clickDownload">
-          <v-icon left>mdi-download</v-icon>
-          ダウンロード
-        </v-btn>
-        <v-spacer />
-      </v-card-actions>
-    </v-card>
-  </v-row>
+  <LayoutView>
+    <template v-slot:main>
+      <v-container>
+        <v-row style="max-width: 480px; width: 100%; margin: auto">
+          <v-card width="100%" outlined style="margin: auto">
+            <v-card-title>ファイル共有</v-card-title>
+            <ImagePreview :file="file" />
+            <v-card-actions>
+              <v-spacer />
+              <v-btn text color="primary" @click="clickDownload">
+                <v-icon left>mdi-download</v-icon>
+                ダウンロード
+              </v-btn>
+              <v-spacer />
+            </v-card-actions>
+          </v-card>
+        </v-row>
+      </v-container>
+    </template>
+  </LayoutView>
 </template>
 
 <script lang="ts">
 import { defineComponent, onMounted, reactive, toRefs } from '@vue/composition-api'
 import Peer, { PeerConstructorOption, PeerError } from 'skyway-js'
 import ImagePreview from '@/components/ImagePreview.vue'
+import LayoutView from '@/components/LayoutView.vue'
 
 // eslint-disable-next-line @typescript-eslint/ban-types
 type State = {
@@ -30,7 +37,7 @@ type Props = {
   peerId: string
 }
 export default defineComponent({
-  components: { ImagePreview },
+  components: { LayoutView, ImagePreview },
   props: {
     apiKey: { type: String, required: true },
     peerId: { type: String, required: true },

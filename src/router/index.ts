@@ -53,11 +53,12 @@ const routes: Array<RouteConfig> = [
     }),
   },
   {
-    path: '/:apiKey/sample4',
+    path: '/:apiKey/sample4/:roomName?',
     name: RouteNames.Sample4,
     component: () => import(/* webpackChunkName: "sample4" */ '../views/ViewSample4.vue'),
     props: (route: Route) => ({
       apiKey: route.params.apiKey,
+      roomName: route.params.roomName ?? null,
     }),
   },
 ]
