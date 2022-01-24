@@ -31,7 +31,7 @@ export class Sample {
       case 2:
         return RouteLocations.toSample2(apiKey)
       case 3:
-        return RouteLocations.toSample3(apiKey)
+        return RouteLocations.toSample3a(apiKey)
       case 4:
         return RouteLocations.toSample4(apiKey)
     }

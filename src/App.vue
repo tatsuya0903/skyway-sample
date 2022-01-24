@@ -40,7 +40,8 @@ export default defineComponent({
           return Sample.find(SampleIds.One).title
         case RouteNames.Sample2:
           return Sample.find(SampleIds.Two).title
-        case RouteNames.Sample3:
+        case RouteNames.Sample3a:
+        case RouteNames.Sample3b:
           return Sample.find(SampleIds.Three).title
         case RouteNames.Sample4:
           return Sample.find(SampleIds.Four).title
@@ -56,7 +57,8 @@ export default defineComponent({
         switch (routeName) {
           case RouteNames.Sample1:
           case RouteNames.Sample2:
-          case RouteNames.Sample3:
+          case RouteNames.Sample3a:
+          case RouteNames.Sample3b:
           case RouteNames.Sample4:
             return RouteLocations.toHome(apiKey)
         }

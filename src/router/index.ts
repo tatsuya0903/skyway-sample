@@ -37,10 +37,19 @@ const routes: Array<RouteConfig> = [
   },
   {
     path: '/:apiKey/sample3',
-    name: RouteNames.Sample3,
-    component: () => import(/* webpackChunkName: "sample3" */ '../views/ViewSample3.vue'),
+    name: RouteNames.Sample3a,
+    component: () => import(/* webpackChunkName: "sample3" */ '../views/ViewSample3a.vue'),
     props: (route: Route) => ({
       apiKey: route.params.apiKey,
+    }),
+  },
+  {
+    path: '/:apiKey/sample3/:peerId',
+    name: RouteNames.Sample3b,
+    component: () => import(/* webpackChunkName: "sample3" */ '../views/ViewSample3b.vue'),
+    props: (route: Route) => ({
+      apiKey: route.params.apiKey,
+      peerId: route.params.peerId,
     }),
   },
   {
