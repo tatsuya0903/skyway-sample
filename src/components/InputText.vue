@@ -8,6 +8,8 @@
       dense
       :label="label"
       hide-details
+      :prepend-inner-icon="icon"
+      :placeholder="placeholder"
     />
   </div>
 </template>
@@ -21,6 +23,8 @@ type Props = {
   label: string | null
   readonly: boolean
   disabled: boolean
+  icon: string | null
+  placeholder: string | null
 }
 export default defineComponent({
   components: {},
@@ -29,6 +33,8 @@ export default defineComponent({
     label: { type: String, default: null },
     readonly: { type: Boolean, default: false },
     disabled: { type: Boolean, default: false },
+    icon: { type: String, default: null },
+    placeholder: { type: String, default: null },
   },
   emits: ['input'],
   setup(props: Props, context: SetupContext) {
@@ -38,7 +44,11 @@ export default defineComponent({
     const localValue = computed<Value>({
       get: () => props.value,
       set: (value: Value) => {
-        emitInput(value)
+        if (value === null || value.length === 0) {
+          emitInput(null)
+        } else {
+          emitInput(value)
+        }
       },
     })
     return {
