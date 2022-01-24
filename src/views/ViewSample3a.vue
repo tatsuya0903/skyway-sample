@@ -3,8 +3,9 @@
     <v-col cols="12" md="6">
       <v-card outlined>
         <v-card-title>ファイル共有</v-card-title>
+        <ImagePreview v-if="file !== null" :file="file" />
         <v-card-text>
-          <InputFile v-model="file" label="ファイル" />
+          <InputFile v-model="file" label="ファイル" accept="image/*" />
         </v-card-text>
         <v-card-actions>
           <v-spacer />
@@ -34,6 +35,7 @@ import Peer, { DataConnection, PeerConstructorOption, PeerError } from 'skyway-j
 import { Env } from '@/env'
 import QrCode from '@/components/QrCode.vue'
 import InputFile from '@/components/InputFile.vue'
+import ImagePreview from '@/components/ImagePreview.vue'
 
 // eslint-disable-next-line @typescript-eslint/ban-types
 type State = {
@@ -45,7 +47,7 @@ type Props = {
   apiKey: string
 }
 export default defineComponent({
-  components: { InputFile, QrCode },
+  components: { ImagePreview, InputFile, QrCode },
   props: {
     apiKey: { type: String, required: true },
   },

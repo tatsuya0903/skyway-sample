@@ -1,12 +1,18 @@
 <template>
   <div class="input-file">
     <div class="input-file__item input-file__item--main">
-      <v-text-field readonly outlined dense hide-details :value="fileName" :label="label" />
+      <div>{{ fileName === null ? '選択されていません' : fileName }}</div>
     </div>
     <div class="input-file__item input-file__item--action">
-      <v-btn outlined color="primary" elevation="0" @click="click">選択</v-btn>
+      <v-btn outlined color="primary" elevation="0" @click="click">ファイル選択</v-btn>
     </div>
-    <input ref="input" class="input-file__input" type="file" @change="changeFile" />
+    <input
+      ref="input"
+      :accept="accept"
+      class="input-file__input"
+      type="file"
+      @change="changeFile"
+    />
   </div>
 </template>
 
@@ -19,6 +25,7 @@ type Props = {
   label: string | null
   readonly: boolean
   disabled: boolean
+  accept: string | null
 }
 export default defineComponent({
   components: {},
@@ -27,6 +34,7 @@ export default defineComponent({
     label: { type: String, default: null },
     readonly: { type: Boolean, default: false },
     disabled: { type: Boolean, default: false },
+    accept: { type: String, default: null },
   },
   emits: ['input'],
   setup(props: Props, context: SetupContext) {
@@ -78,7 +86,7 @@ export default defineComponent({
   gap: 4px;
 
   .input-file__item {
-    justify-content: center;
+    display: flex;
     align-items: center;
     &.input-file__item--main {
       flex: 1;
