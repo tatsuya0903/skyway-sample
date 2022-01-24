@@ -1,9 +1,16 @@
 <template>
-  <v-row>
-    <v-col>
-      <div>{{ peerId }}</div>
-      <v-btn @click="clickDownload">ダウンロード</v-btn>
-    </v-col>
+  <v-row style="max-width: 480px; width: 100%; margin: auto">
+    <v-card width="100%" outlined style="margin: auto">
+      <v-card-title>ファイル共有</v-card-title>
+      <v-card-subtitle>{{ peerId }}</v-card-subtitle>
+      <v-card-actions>
+        <v-spacer />
+        <v-btn text color="primary" @click="clickDownload">
+          <v-icon left>mdi-download</v-icon>
+          ダウンロード
+        </v-btn>
+      </v-card-actions>
+    </v-card>
   </v-row>
 </template>
 
